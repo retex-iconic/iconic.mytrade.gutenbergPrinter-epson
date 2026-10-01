@@ -703,7 +703,10 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		    	String printerIdNumber;
 		    	RTStatus status = null;
 		    	
-		    	fiscalPrinter.getData(FiscalPrinterConst.FPTR_GD_PRINTER_ID, opt, printerId);
+				String op = "01";
+				StringBuffer objb = new StringBuffer(op);
+				executeRTDirectIo(3217, 0, objb);
+				printerId[0] = objb.toString().substring(2);
 		      	printerIdModel = printerId[0].substring(6,8);
 				System.out.println("getPrinterId - printerIdModel : "+printerIdModel);
 		      	printerIdNumber= printerId[0].substring(0, 6);
@@ -2545,6 +2548,12 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 			{
 				if (isRTModel() && (i == jpos.FiscalPrinterConst.FPTR_GD_FISCAL_REC || i == jpos.FiscalPrinterConst.FPTR_GD_RECEIPT_NUMBER) && !RTTxnType.isRefundTrx())
 		            as[0] = xgetDailyData("24");
+				else if (i == jpos.FiscalPrinterConst.FPTR_GD_PRINTER_ID) {
+					int[] icmd = {3217};
+					StringBuffer sbcmd = new StringBuffer("01");
+					fiscalPrinter.directIO(0, icmd, sbcmd);
+					as[0] = sbcmd.toString().substring(2);
+				}
 				else {
 					while (true) {
 						int errcode = 0;
@@ -2581,6 +2590,12 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		{
 			if (isRTModel() && (i == jpos.FiscalPrinterConst.FPTR_GD_FISCAL_REC || i == jpos.FiscalPrinterConst.FPTR_GD_RECEIPT_NUMBER) && !RTTxnType.isRefundTrx())
 	            as[0] = xgetDailyData("24");
+			else if (i == jpos.FiscalPrinterConst.FPTR_GD_PRINTER_ID) {
+				int[] icmd = {3217};
+				StringBuffer sbcmd = new StringBuffer("01");
+				fiscalPrinter.directIO(0, icmd, sbcmd);
+				as[0] = sbcmd.toString().substring(2);
+			}
 			else {
 				while (true) {
 					int errcode = 0;
